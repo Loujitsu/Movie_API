@@ -1,0 +1,4 @@
+{"_id":{"$oid":"628dd4a923dd8e5cd4507a29"},"Username":"Castor Troy","Password":"0666","Email":"ctroy@email.com","Birthday":"02/02/1999","FavoriteMovies":[]}
+{"_id":{"$oid":"628dd4d423dd8e5cd4507a2a"},"Username":"Sean Archer","Password":"0999","Email":"sarcher@email.com","Birthday":"03/03/1999","FavoriteMovies":[]}
+{"_id":{"$oid":"628dd60d23dd8e5cd4507a2b"},"Username":"Tong Po","Password":"3456","Email":"tongpo@email.com","Birthday":"04/04/1967","FavoriteMovies":[]}
+{"_id":{"$oid":"628dd64523dd8e5cd4507a2c"},"Username":"Chong Li","Password":"8790","Email":"chongli@email.com","Birthday":"05/05/1893","FavoriteMovies":[]}
