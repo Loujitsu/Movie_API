@@ -1,9 +1,17 @@
 const express = require('express'),
-    morgan = require('morgan');
     bodyParser = require('body-parser');
     uuid = require('uuid');
 
+const morgan = require('morgan');
 const app = express();
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+const Movies = Models.Movies;
+const Users = Models.Users;
+const Genre = Models.Genres;
+const Directors = Models.Director;
+
 app.use(morgan('common'));
 app.use(bodyParser.json());
 
@@ -40,7 +48,7 @@ let topMovies = [
     },
     {
       "Title": 'Dune',
-      "Description": "A noble family becomes embroiled in a war for control over the galaxy's most valuable asset while its heir becomes troubled by visions of a dark future.",
+      "Description": "A noble family becomes embroiled in a war for control over the galaxys most valuable asset while its heir becomes troubled by visions of a dark future.",
       "Genre": {
           "Name": "Drama"
       },
@@ -65,7 +73,7 @@ let topMovies = [
       "Featured": false   
     },
     {
-      "Title": 'Batman: The Dark Night',
+      "Title": 'The Dark Knight',
       "Description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
       "Genre": {
           "Name": "Action"
@@ -130,16 +138,16 @@ let topMovies = [
         "Featured": false
     },
     {
-      "Title": 'No Country For Old Men',
-      "Description": "Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and more than two million dollars in cash near the Rio Grande.",
+      "Title": 'Interstellar',
+      "Description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanitys survival.",
       "Genre": {
-          "Name": "Thriller"
+          "Name": "Sci-fi"
       },
       "Director": {
-          "Name":'Coen\'s',
-          "Bio": "The younger brother of Joel, Ethan Coen is an Academy Award and Golden Globe winning writer, producer and director coming from small independent films to big profile Hollywood films. He was born on September 21, 1957 in Minneapolis, Minnesota. In some films of the brothers- Ethan & Joel wrote, Joel directed and Ethan produced - with both editing under the name of Roderick Jaynes; but in 2004 they started to share the three main duties plus editing. Each film bring its own quality, creativity, art and with one project more daring the other. Joel Daniel Coen is an American filmmaker who regularly collaborates with his younger brother Ethan. They made Raising Arizona, Barton Fink, Fargo, The Big Lebowski, True Grit, O Brother Where Art Thou?, Burn After Reading, A Serious Man, Inside Llewyn Davis, Hail Caesar and other projects. Joel married actress Frances McDormand in 1984 and had an adopted son."
+          "Name":'Christopher Nolan',
+          "Bio": "Best known for his cerebral, often nonlinear, storytelling, acclaimed writer-director Christopher Nolan was born on July 30, 1970, in London, England. Over the course of 15 years of filmmaking, Nolan has gone from low-budget independent films to working on some of the biggest blockbusters ever made."
       },
-      "ImageURL": "https://www.imdb.com/title/tt0477348/mediaviewer/rm1263244032/",
+      "ImageURL": "https://www.imdb.com/title/tt0816692/mediaviewer/rm4043724800/?ref_=tt_ov_i",
       "Featured": false
     }
   ];
