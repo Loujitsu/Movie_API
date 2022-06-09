@@ -1,11 +1,5 @@
 const mongoose = require('mongoose');
-const Models = require('./models,js');
-
-const Movies = Models.Movies;
-const Users = Models.Users;
-
-mongoose.connect('mongodb://localhost:8888/movies', { useNewUrlParser: true, useUnifiedTopology: true });
-
+const Models = require('./models.js');
 
 let movieSchema = mongoose.Schema({
     Title: {type: String, required: true},
@@ -34,5 +28,5 @@ let userSchema = mongoose.Schema({
 let Movie = mongoose.model('Movie', movieSchema);
 let User = mongoose.model('User', userSchema);
 
-module.exports.Movie = Movie;
-module.exports.User = User;
+module.exports.Movies = Movie;
+module.exports.Users = User;

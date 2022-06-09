@@ -5,12 +5,15 @@ const express = require('express'),
 const morgan = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
-const Models = require('./models.js');
 
-const Movies = Models.Movies;
-const Users = Models.Users;
-const Genre = Models.Genres;
-const Directors = Models.Director;
+mongoose.connect('mongodb+srv://Loujitsu:Bearandfinn88!@cluster0.0tott0v.mongodb.net/moviesDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const Models = require('./models');
+
+const movies = Models.Movies;
+const users = Models.Users;
+const genre = Models.Genres;
+const directors = Models.Director;
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
@@ -19,6 +22,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+/*
 let topMovies = [
     {
       "Title": 'The Martian',
@@ -164,18 +168,14 @@ let topMovies = [
         favoriteMovies: ['Face Off']
     },
 ]
+*/
 
 // Create
 app.post('/users', (req, res) => {
     const newUser = req.body;
-
-    if (newUser.name) {
-        newUser.id = uuid.v4();
-        users.push(newUser);
-        res.status(201).json(newUser)
-    } else {
-        res.status(400).send('users need name')
-    }
+    users.create(newUser)
+    .then(user => res.send(user))
+    .catch(err =>console.log(err));
 })
 
 // Update
