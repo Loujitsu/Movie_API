@@ -5,15 +5,17 @@ const express = require('express'),
 const morgan = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
+const Models = require('./models.js');
+const { request } = require('express');
 
-mongoose.connect('mongodb+srv://Loujitsu:Bearandfinn88!@cluster0.0tott0v.mongodb.net/moviesDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+const Movies = Models.Movies;
+const Users = Models.Users;
+// He Had Users
+const Genre = Models.Genres;
+const Directors = Models.Director;
 
-const Models = require('./models');
+mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
 
-const movies = Models.Movies;
-const users = Models.Users;
-const genre = Models.Genres;
-const directors = Models.Director;
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
@@ -22,7 +24,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-/*
 let topMovies = [
     {
       "Title": 'The Martian',
@@ -168,30 +169,78 @@ let topMovies = [
         favoriteMovies: ['Face Off']
     },
 ]
-*/
 
 // Create
 app.post('/users', (req, res) => {
-    const newUser = req.body;
-    users.create(newUser)
-    .then(user => res.send(user))
-    .catch(err =>console.log(err));
-})
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) => {res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+// Get all users
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// Get a user by username
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 // Update
-app.put('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const updatedUser = req.body;
-
-    let user = users.find( user => user.id == id); 
-    // double == means a string value like '2' can equal integer value 2
-    if (user) {
-        user.name = updatedUser.name;
-        res.status(200).json(user);
-    } else {
-        res.status(400).send('no such user')
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
     }
-})
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
 
 // Create
 app.post('/users/:id/:movieTitle', (req, res) => {
@@ -207,6 +256,22 @@ app.post('/users/:id/:movieTitle', (req, res) => {
     }
 })
 
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
 // Delete
 app.delete('/users/:id/:movieTitle', (req, res) => {
     const { id, movieTitle } = req.params;
@@ -221,19 +286,38 @@ app.delete('/users/:id/:movieTitle', (req, res) => {
     }
 })
 
-// Delete
-app.delete('/users/:id', (req, res) => {
-    const { id } = req.params;
+app.delete('/users/:Username/movies/:MovieID', (req, res,) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $pull: { FavoriteMovies: req.params.MovieID },
+    }, 
+    { new: true },
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    });
+});  
 
-    let user = users.find( user => user.id == id); 
-    // double == means a string value like '2' can equal integer value 2
-    if (user) {
-        users = users.filter(user => user.id != id);
-        res.status(200).send('User ' + id + ' has been deleted');
-    } else {
-        res.status(400).send('no such user')
-    }
-})
+
+
+// Delete
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 
   
@@ -246,14 +330,25 @@ app.delete('/users/:id', (req, res) => {
     res.sendFile('public/documentation.html', { root: __dirname });
   });
   
-  app.get('/movies', (req, res) => {
-    res.json(topMovies);
-  });
+  // app.get('/movies', (req, res) => {
+  //   res.json(topMovies);
+  // });
   
-  // READ
-  app.get('/movies', (req, res) => {
-    res.status(200).json(topMovies);
-  });
+  // // READ
+  // app.get('/movies', (req, res) => {
+  //   res.status(200).json(topMovies);
+  // });
+
+app.get('/movies', (req, res) => {
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
   // Read
 app.get('/movies/:title', (req, res) => {
