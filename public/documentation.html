@@ -4,7 +4,25 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
     <title>DOCUMENTATION</title>
+    <style>
+      h1,
+      p {
+        text-align: center;
+      }
+      table {
+        text-align: left;
+      }
+      pre code {
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <h1>ApiFlix</h1>
@@ -17,5 +35,205 @@
       <br />
       personal information, and create a list of their favorite movies.
     </p>
+    <main class="table-responsive-sm">
+      <table
+        class="table table-bordered table-striped table-hover table-sm table-dark"
+      >
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Business Logic</th>
+            <th scope="col">URL</th>
+            <th scope="col">HTTP Method</th>
+            <th scope="col">Query Parameters</th>
+            <th scope="col">Request Body Data Format</th>
+            <th scope="col">Response Body Data Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>>Return a list of ALL movies to the user</td>
+            <td>/movies</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>None</td>
+            <td>A JSON object holding data about all movies</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>>Return data about a single movie by title</td>
+            <td>/movies/:title</td>
+            <td>GET</td>
+            <td>:title</td>
+            <td>None</td>
+            <td>
+              A JSON object holding data about the selected movie containing
+              description, genre, director and img URL. Example:
+              <pre>
+                <code>
+                  {
+                    "Title": "Lucky Number Slevin",
+                    "Description": "A case of mistaken identity lands Slevin 
+                                    into the middle of a war being plotted 
+                                    by two of the city's most rival crime 
+                                    bosses. Under constant surveillance by 
+                                    Detective Brikowski and assassin Goodkat, 
+                                    he must get them before they get him.",
+                    "Genre": {
+                        "Name": "Drama"
+                    },
+                    "Director": {
+                        "Name": "Paul McGuigan",
+                        "Bio": "Paul McGuigan was born on September 19, 1963 
+                                in Bellshill, Scotland. He is a director and 
+                                producer, known for Lucky Number Slevin 
+                                (2006), Wicker Park (2004) and Victor 
+                                Frankenstein (2015). He is married to Natasha 
+                                Noramly. They have one child. He was previously 
+                                married to Elisabeth McGuigan."
+                    },
+                    "ImageURL": "https://www.imdb.com/title/tt0425210/mediaviewer/rm288767744/",
+                    "Featured": false
+                    },
+                </code>
+              </pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Return data about a genre</td>
+            <td>/movies/genre/:genreName</td>
+            <td>GET</td>
+            <td>:genreName</td>
+            <td>None</td>
+            <td>
+              A JSON object holding data about the selected genre. Example:
+              <pre>
+                <code>
+                  {
+                    "Name": "Drama"
+                  }
+                </code>
+              </pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">4</th>
+            <td>Return data about a director (bio) by name</td>
+            <td>/movies/directors/:name</td>
+            <td>GET</td>
+            <td>:name</td>
+            <td>None</td>
+            <td>
+              A JSON object holding data about the selected director. Example:
+              <pre>
+                <code>
+                  {
+                    "Name": "Paul McGuigan",
+                    "Bio": "Paul McGuigan was born on September 19, 1963 in 
+                            Bellshill, Scotland. He is a director and producer, 
+                            known for Lucky Number Slevin (2006), Wicker Park 
+                            (2004) and Victor Frankenstein (2015). He is married 
+                            to Natasha Noramly. They have one child. He was 
+                            previously married to Elisabeth McGuigan."
+                  }
+                </code>
+              </pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">5</th>
+            <td>Allow new users to register</td>
+            <td>/users</td>
+            <td>POST</td>
+            <td>None</td>
+            <td>
+              A JSON object holding data about the user to add. Example:
+              <pre>
+                <code>
+                  {
+                    "name": "Tina",
+                    "favoriteMovies":[]
+                
+                  }
+                </code>
+              </pre>
+            </td>
+            <td>
+              A JSON object holding data about added user including ID. Example:
+              <pre>
+                <code>
+                  {
+                    "name": "Tina",
+                    "favoriteMovies": [],
+                    "id": "08e51d15-14ba-4edd-bfdd-4d88646a4582"
+                  }
+                </code>
+              </pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">6</th>
+            <td>Allow users to update their user info (username)</td>
+            <td>/users/:id</td>
+            <td>PUT</td>
+            <td>:id</td>
+            <td>
+              A JSON object holding the new username. Example:
+              <pre>
+                <code>
+                  {
+                    "name": "Babe Ruth",
+                    "favoriteMovies":[]
+                  }
+                </code>
+              </pre>
+            </td>
+            <td>
+              A JSON object with the updated user profile. Example:
+              <pre>
+                <code>
+                  {
+                    "id": 1,
+                    "name": "Babe Ruth",
+                    "favoriteMovies": [
+                        "Rush Hour 2"
+                    ]
+                  }
+                </code>
+              </pre>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">8</th>
+            <td>Allow users to add a movie to their list of favorites</td>
+            <td>/users/:id/:movieTitle</td>
+            <td>POST</td>
+            <td>:id, :movieTitle</td>
+            <td>None</td>
+            <td>A text message indicating the movie was added</td>
+          </tr>
+          <tr>
+            <th scope="row">9</th>
+            <td>Allow users to remove a movie from their list of favorites</td>
+            <td>/users/:id/:movieTitle</td>
+            <td>DELETE</td>
+            <td>:id, :movieTitle</td>
+            <td>None</td>
+            <td>A text message indicating the movie was deleted</td>
+          </tr>
+          <tr>
+            <th scope="row">10</th>
+            <td>Allow existing users to delete account</td>
+            <td>/users/:id</td>
+            <td>DELETE</td>
+            <td>:id</td>
+            <td>None</td>
+            <td>A message indicating the user was deleted</td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
   </body>
 </html>
