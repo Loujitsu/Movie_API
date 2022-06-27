@@ -3,19 +3,17 @@ const express = require('express'),
     uuid = require('uuid');
 
 const morgan = require('morgan');
-const app = express();
 const mongoose = require('mongoose');
 const Models = require('./models.js');
-const { request } = require('express');
 
-const Movies = Models.Movies;
+const Movies = Models.Movie;
 const Users = Models.Users;
-// He Had Users
-const Genre = Models.Genres;
+const Genres = Models.Genre;
 const Directors = Models.Director;
 
 mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
 
+const app = express();
 
 app.use(morgan('common'));
 app.use(bodyParser.json());
@@ -23,6 +21,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+let auth = require('./auth')(app);
+
+const passport = require('passport');
+require('./passport');
 
 let topMovies = [
     {
@@ -184,7 +187,7 @@ app.post('/users', (req, res) => {
             Email: req.body.Email,
             Birthday: req.body.Birthday
           })
-          .then((user) => {res.status(201).json(user) })
+          .then((user) =>{res.status(201).json(user) })
         .catch((error) => {
           console.error(error);
           res.status(500).send('Error: ' + error);
@@ -197,9 +200,10 @@ app.post('/users', (req, res) => {
     });
 });
 
+
 // Get all users
 app.get('/users', (req, res) => {
-  Users.find()
+  User.find()
     .then((users) => {
       res.status(201).json(users);
     })
@@ -339,16 +343,16 @@ app.delete('/users/:Username', (req, res) => {
   //   res.status(200).json(topMovies);
   // });
 
-app.get('/movies', (req, res) => {
-  Movies.find()
-    .then((movies) => {
-      res.status(201).json(movies);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
+  app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Movies.find()
+      .then((movies) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
 
   // Read
 app.get('/movies/:title', (req, res) => {
