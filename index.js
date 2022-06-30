@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 
-const Movies = Models.Movie;
+const Movies = Models.Movies;
 const Users = Models.Users;
 const Genres = Models.Genre;
 const Directors = Models.Director;
@@ -22,10 +22,10 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-let auth = require('./auth')(app);
-
 const passport = require('passport');
 require('./passport');
+
+let auth = require('./auth')(app);
 
 let topMovies = [
     {
@@ -203,7 +203,7 @@ app.post('/users', (req, res) => {
 
 // Get all users
 app.get('/users', (req, res) => {
-  User.find()
+  Users.find()
     .then((users) => {
       res.status(201).json(users);
     })
