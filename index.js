@@ -11,6 +11,7 @@ const Users = Models.Users;
 const Genres = Models.Genre;
 const Directors = Models.Director;
 
+// Change this to your connection string from MonngoAtlas the remote one
 mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
@@ -25,6 +26,24 @@ app.use(bodyParser.urlencoded({
 const passport = require('passport');
 require('./passport');
 
+const { check, validationResult } = require('express-validator');
+
+const cors = require('cors');
+const { request } = require('express');
+
+let allowedOrigins = ['http://localhost:8888', 'http://testsite.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ //If a specific origin isn't found on found on the of allowed origins
+      let message = 'The CORS policy for this application does not allow access from origin' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 let auth = require('./auth')(app);
 
 let topMovies = [
@@ -32,7 +51,8 @@ let topMovies = [
       "Title": 'The Martian',
       "Description": "An astronaut becomes stranded on Mars after his team assume him dead, and must rely on his ingenuity to find a way to signal to Earth that he is alive and can survive until a potential rescue.",
       "Genre": {
-          "Name": "Sci-Fi"
+          "Name": "Sci-Fi",
+          "Description" : "A film genre that uses speculative, fictional science-based depictions of phenomena that are not fully accepted by mainstream science, such as extraterrestrial lifeforms, spacecraft, robots, cyborgs, interstellar travel or other technologies."
       },
       "Director": {
           "Name": 'Ridley Scott',
@@ -45,7 +65,8 @@ let topMovies = [
       "Title": 'Predator',
       "Description": "A team of commandos on a mission in a Central American jungle find themselves hunted by an extraterrestrial warrior.",
       "Genre": {
-          "Name": "Action"
+          "Name": "Action",
+          "Description" : "A film genre where action sequences, such as fighting, stunts, car chases or explosions, take precedence over elements like characterization or complex plotting. The action typically involves individual efforts on the part of the hero, in contrast with most war films."
       },
       "Director": {
           "Name": 'John McTiernan',
@@ -58,7 +79,8 @@ let topMovies = [
       "Title": 'Dune',
       "Description": "A noble family becomes embroiled in a war for control over the galaxys most valuable asset while its heir becomes troubled by visions of a dark future.",
       "Genre": {
-          "Name": "Drama"
+          "Name": "Drama",
+          "Description" : "The drama genre features stories with high stakes and a lot of conflicts. They're plot-driven and demand that every character and scene move the story forward."
       },
       "Director": {
           "Name": 'Denis Villeneuve',
@@ -71,7 +93,8 @@ let topMovies = [
       "Title": 'The Gentlemen',
       "Description": "An American expat tries to sell off his highly profitable marijuana empire in London, triggering plots, schemes, bribery and blackmail in an attempt to steal his domain out from under him.",
       "Genre": {
-          "Name": "Action"
+          "Name": "Action",
+          "Description" : "A film genre where action sequences, such as fighting, stunts, car chases or explosions, take precedence over elements like characterization or complex plotting. The action typically involves individual efforts on the part of the hero, in contrast with most war films."
       },
       "Director": {
           "Name": 'Guy Ritchie',
@@ -84,7 +107,8 @@ let topMovies = [
       "Title": 'The Dark Knight',
       "Description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
       "Genre": {
-          "Name": "Action"
+          "Name": "Action",
+          "Description" : "A film genre where action sequences, such as fighting, stunts, car chases or explosions, take precedence over elements like characterization or complex plotting. The action typically involves individual efforts on the part of the hero, in contrast with most war films."
       },
       "Director": {
           "Name": 'Christopher Nolan',
@@ -97,7 +121,8 @@ let topMovies = [
       "Title": 'Deadpool',
       "Description": "A wisecracking mercenary gets experimented on and becomes immortal but ugly, and sets out to track down the man who ruined his looks.",
       "Genre": {
-          "Name": "Comedy"
+          "Name": "Comedy",
+          "Description" : "Comedies are light-hearted dramas, crafted to amuse, entertain, and provoke enjoyment. The comedy genre humorously exaggerates the situation, the language, action, and characters."
       },
       "Director": {
           "Name": 'Tim Miller',
@@ -110,7 +135,8 @@ let topMovies = [
       "Title": 'No Country For Old Men',
         "Description": "Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and more than two million dollars in cash near the Rio Grande.",
         "Genre": {
-            "Name": "Thriller"
+            "Name": "Thriller",
+            "Description" : "Thrillers are characterized and defined by the moods they elicit, giving viewers heightened feelings of suspense, excitement, surprise, anticipation and anxiety."
         },
         "Director": {
             "Name":'Coen\'s',
@@ -123,7 +149,8 @@ let topMovies = [
       "Title": 'Knives Out',
       "Description": "A detective investigates the death of the patriarch of an eccentric, combative family.",
       "Genre": {
-          "Name": "Crime"
+          "Name": "Crime",
+          "Description" : "A film genre inspired by and analogous to the crime fiction literary genre. Films of this genre generally involve various aspects of crime and its detection."
       },
       "Director": {
           "Name": 'Rian Johnson',
@@ -136,7 +163,8 @@ let topMovies = [
       "Title": 'Matrix',
         "Description": "When a beautiful stranger leads computer hacker Neo to a forbidding underworld, he discovers the shocking truth--the life he knows is the elaborate deception of an evil cyber-intelligence.",
         "Genre": {
-            "Name": "Sci-Fi"
+            "Name": "Sci-Fi",
+            "Description" : "A film genre that uses speculative, fictional science-based depictions of phenomena that are not fully accepted by mainstream science, such as extraterrestrial lifeforms, spacecraft, robots, cyborgs, interstellar travel or other technologies."
         },
         "Director": {
             "Name": 'Wachowski\'s',
@@ -149,7 +177,8 @@ let topMovies = [
       "Title": 'Interstellar',
       "Description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanitys survival.",
       "Genre": {
-          "Name": "Sci-fi"
+          "Name": "Sci-fi",
+          "Description" : "A film genre that uses speculative, fictional science-based depictions of phenomena that are not fully accepted by mainstream science, such as extraterrestrial lifeforms, spacecraft, robots, cyborgs, interstellar travel or other technologies."
       },
       "Director": {
           "Name":'Christopher Nolan',
@@ -174,24 +203,45 @@ let topMovies = [
 ]
 
 // Create
-app.post('/users', (req, res) => {
-  Users.findOne({ Username: req.body.Username })
+app.post('/users',
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], (req, res) => {
+
+  // check the validation object for errors
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  Users.findOne({ Username: req.body.Username })//Search to see if a user with the requested username is already exists
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.Username + 'already exists');
+        //If the user is found, send a response that it already exists
+        return res.status(400).send(req.body.Username + 'Already Exists');
       } else {
         Users
           .create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday
           })
-          .then((user) =>{res.status(201).json(user) })
+        .then((user) => { res.status(201).json(user) })
         .catch((error) => {
           console.error(error);
           res.status(500).send('Error: ' + error);
-        })
+        });
       }
     })
     .catch((error) => {
@@ -329,6 +379,7 @@ app.delete('/users/:Username', (req, res) => {
   app.get('/', (req, res) => {
     res.send('Welcome to CineApi!');
   });
+
   
   app.get('/documentation', (req, res) => {                  
     res.sendFile('public/documentation.html', { root: __dirname });
@@ -404,8 +455,9 @@ app.get('/movies/director/:directorName', (req, res) => {
   });
 
   // listen for requests
-  app.listen(8888, () => {
-    console.log('Listening on port 8888.');
+  const port = process.env.PORT || 8888;
+  app.listen(port, '0.0.0.0',() => {
+   console.log('Listening on Port ' + port);
   });
 
 
