@@ -4,7 +4,7 @@ const express = require('express'),
 
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const Models = require('./models.js');
+const Models = require('./moviesJSON/models.js');
 
 const Movies = Models.Movies;
 const Users = Models.Users;
@@ -12,7 +12,10 @@ const Genres = Models.Genre;
 const Directors = Models.Director;
 
 // Change this to your connection string from MonngoAtlas the remote one
-mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/CineAPI', { useNewUrlParser: true, useUnifiedTopology: true });
+// Change <password> to your password
+// Redeploy to heroku
+mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 
@@ -461,4 +464,7 @@ app.get('/movies/director/:directorName', (req, res) => {
   });
 
 
+  // https://git.heroku.com/protected-earth-77833.git
 
+
+  // mongoimport --uri mongodb+srv://Lordonez:Bearandfinn88!@cinedb.yuo28.mongodb.net/moives --collection movies --type json --file ../moviesJSON/movies.joson
