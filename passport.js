@@ -1,4 +1,4 @@
-const Models = require('./models.js');
+const Models = require('./models.js/models.js');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');

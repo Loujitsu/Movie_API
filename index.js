@@ -1,21 +1,21 @@
 const express = require('express'),
-    bodyParser = require('body-parser');
+    morgan = require('morgan'),
+    bodyParser = require('body-parser'),
     uuid = require('uuid');
 
-const morgan = require('morgan');
 const mongoose = require('mongoose');
-const Models = require('./moviesJSON/models.js');
+const Models = require('./models.js/models.js');
 
 const Movies = Models.Movies;
 const Users = Models.Users;
 const Genres = Models.Genre;
 const Directors = Models.Director;
-
+require('dotenv').config()
 // Change this to your connection string from MonngoAtlas the remote one
 // mongoose.connect('mongodb://localhost:27017/CineAPI', { useNewUrlParser: true, useUnifiedTopology: true });
 // Change <password> to your password
 // Redeploy to heroku
-mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 
@@ -34,7 +34,7 @@ const { check, validationResult } = require('express-validator');
 const cors = require('cors');
 const { request } = require('express');
 
-let allowedOrigins = ['http://localhost:8888', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost:8888', 'http://testsite.com', 'https://cineflix-91642.herokuapp.com/'];
 
 app.use(cors({
   origin: (origin, callback) => {
