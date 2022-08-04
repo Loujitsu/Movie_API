@@ -10,7 +10,6 @@ const Movies = Models.Movies;
 const Users = Models.Users;
 const Genres = Models.Genre;
 const Directors = Models.Director;
-require('dotenv').config()
 // Change this to your connection string from MonngoAtlas the remote one
 // mongoose.connect('mongodb://localhost:27017/CineAPI', { useNewUrlParser: true, useUnifiedTopology: true });
 // Change <password> to your password
