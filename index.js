@@ -396,7 +396,7 @@ app.delete('/users/:Username', (req, res) => {
   //   res.status(200).json(topMovies);
   // });
 
-  app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  app.get("/movies", function (req, res) {
     Movies.find()
       .then((movies) => {
         res.status(201).json(movies);
