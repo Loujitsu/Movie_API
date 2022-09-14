@@ -33,7 +33,7 @@ const { check, validationResult } = require('express-validator');
 const cors = require('cors');
 const { request } = require('express');
 
-let allowedOrigins = ['http://localhost:8888', 'https://movie-flix-289893.herokuapp.com/', 'http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8888', 'http://localhost:1234'];
 
 app.use(cors({
   origin: (origin, callback) => {
