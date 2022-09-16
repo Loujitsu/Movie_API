@@ -60,7 +60,7 @@ let topMovies = [
           "Name": 'Ridley Scott',
           "Bio": "Director Ridley Scott was born on November 30, 1937 in South Shields.",
       },
-      "ImageURL": "https://www.imdb.com/title/tt3659388/mediaviewer/rm1391324160/",
+      "ImageURL": "https://m.media-amazon.com/images/M/MV5BMTc2MTQ3MDA1Nl5BMl5BanBnXkFtZTgwODA3OTI4NjE@._V1_.jpg",
       "Featured": false
     },
     {
